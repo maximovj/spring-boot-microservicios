@@ -1,0 +1,54 @@
+//@API_URL=http://127.0.0.1:8090/api/v1/students
+@API_URL=http://127.0.0.1:8080/api/v1/students
+@contentType = application/json
+@Token = ...  
+
+###
+
+// Obtener todos los estudiantes
+# @name getFindAllStudents
+GET {{API_URL}}/all
+Content-Type: {{contentType}}
+Authorization: Bearer {{Token}}
+
+{
+
+}
+
+###
+
+// Crear un nuevo estudiante
+# @name postCreateStudent
+POST {{API_URL}}/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{Token}}
+
+{
+    //"id": "",
+    "name": "Fulano D",
+    "lastname": "Fulano D",
+    "email": "fulanoD@example.com",
+    "courseId": 1
+}
+
+###
+
+// Buscar un estudiante
+# @name getSearchCourse
+GET {{API_URL}}/search/1
+Content-Type: {{contentType}}
+
+{
+
+}
+
+###
+
+// Obtener la lista de estudiantes dentro del curso 
+# @name getFindCourseWithStudents
+GET {{API_URL}}/search/course/1
+Content-Type: {{contentType}}
+
+{
+
+}

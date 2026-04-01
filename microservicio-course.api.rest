@@ -1,0 +1,53 @@
+//@API_URL=http://127.0.0.1:9090/api/v1/courses
+@API_URL=http://127.0.0.1:8080/api/v1/courses
+@contentType = application/json
+@Token = ...  
+
+// Obtener la lista de estudiantes dentro del curso 
+# @name getFindCourseWithStudents
+GET {{API_URL}}/query/students/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{Token}}
+
+{
+
+}
+
+###
+
+// Obtener la lista de estudiantes dentro del curso
+# @name getFindAllCourses
+GET {{API_URL}}/all
+Content-Type: {{contentType}}
+Authorization: Bearer {{Token}}
+
+{
+
+}
+
+###
+
+// Crear un nuevo curso
+# @name postCreateCourse
+POST {{API_URL}}/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{Token}}
+
+{
+    //"id": "",
+    "name": "Curso de POO",
+    "teacher": "Fulano"
+}
+
+
+###
+
+
+// Buscar un curso
+# @name getSearchCourse
+GET {{API_URL}}/search/1
+Content-Type: {{contentType}}
+
+{
+
+}
