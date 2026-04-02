@@ -1,27 +1,78 @@
 server:
-    port: 9090
+  port: 9090
 
 spring:
-    application:
-            name: msvc-course
-    datasource:
-        driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5432/
-        username: postgres
-        password: postgres
-    jpa:
-        hibernate:
-            ddl-auto: update
-        database: postgresql
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.PostgreSQLDialect
-        show-sql: true
+  application:
+    name: msvc-course
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+# Configuración de URLs de servicios
+student:
+  service:
+    url: localhost:8080/api/v1/students # URL del servicio de estudiantes
 
 eureka:
-    instance:
-        hostname: localhost
-    client:
-        service-url: 
-            defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# Configuración de Resilience4J
+resilience4j:
+  circuitbreaker:
+    instances:
+      courseService: # 👈 Debe coincidir con SERVICE_NAME para usar Circuit Breaker
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        event-consumer-buffer-size: 10
+        record-exceptions:
+          # Solo errores que indican que el servicio NO está funcionando
+          - feign.FeignException$InternalServerError  # 500
+          - feign.FeignException$ServiceUnavailable   # 503
+          - feign.RetryableException                   # Problemas de red/timeout
+          - java.net.SocketTimeoutException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.dao.DataAccessException  # Errores de BD
+        ignore-exceptions:
+          - feign.FeignException$BadRequest           # Ignorar 400
+          - feign.FeignException$NotFound              # Ignorar 404
+  timelimiter:
+    instances:
+      courseService:
+        timeout-duration: 5s
+
+# Actuator para monitorear
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,circuitbreakers,metrics,info
+  endpoint:
+    health:
+      show-details: always
+    circuitbreakers:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
