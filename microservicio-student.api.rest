@@ -25,9 +25,9 @@ Authorization: Bearer {{Token}}
 
 {
     //"id": "",
-    "name": "Fulano D",
-    "lastname": "Fulano D",
-    "email": "fulanoD@example.com",
+    "name": "FulanoA",
+    "lastname": "FulanoA",
+    "email": "fulanoA@example.com",
     "courseId": 1
 }
 

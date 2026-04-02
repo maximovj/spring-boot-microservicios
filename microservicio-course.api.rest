@@ -1,5 +1,6 @@
-//@API_URL=http://127.0.0.1:9090/api/v1/courses
-@API_URL=http://127.0.0.1:8080/api/v1/courses
+@BASE_URL_SERVICE=http://127.0.0.1:9090
+@BASE_URL_GATEWAY=http://127.0.0.1:8080
+@API_URL={{BASE_URL_GATEWAY}}/api/v1/courses
 @contentType = application/json
 @Token = ...  
 
@@ -51,3 +52,52 @@ Content-Type: {{contentType}}
 {
 
 }
+
+###
+
+// Crear un nuevo curso
+# @name postCreateCourse
+POST {{BASE_URL_SERVICE}}/actuator/circuitbreakers/courseService
+Content-Type: {{contentType}}
+Authorization: Bearer {{Token}}
+
+{
+    //"id": "",
+    "name": "Curso de POO",
+    "teacher": "Fulano"
+}
+
+###
+
+# Estado general de salud
+curl -x GET {{BASE_URL_SERVICE}}/actuator/health
+
+###
+
+# Todos los circuit breakers
+curl -x POST {{BASE_URL_SERVICE}}/actuator/circuitbreakers
+
+###
+
+# Circuit breaker específico
+curl -x POST {{BASE_URL_SERVICE}}/actuator/circuitbreakers/courseService
+
+###
+
+# Métricas de llamadas al circuit breaker
+curl -x GET {{BASE_URL_SERVICE}}/actuator/metrics/resilience4j.circuitbreaker.calls
+
+###
+
+# Métricas del estado del circuit breaker
+curl -x GET  {{BASE_URL_SERVICE}}/actuator/metrics/resilience4j.circuitbreaker.state
+
+###
+
+# Todas las métricas disponibles
+curl -x GET {{BASE_URL_SERVICE}}/actuator/metrics
+
+###
+
+# Información de eventos del circuit breaker
+curl -x GET {{BASE_URL_SERVICE}}/actuator/circuitbreakerevents
